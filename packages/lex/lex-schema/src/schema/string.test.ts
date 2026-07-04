@@ -515,6 +515,16 @@ describe('StringSchema', () => {
       expect(result.success).toBe(false)
     })
 
+    it('rejects uppercase primary language subtags', () => {
+      const result = schema.safeParse('JA')
+      expect(result.success).toBe(false)
+    })
+
+    it('rejects four-letter primary language subtags', () => {
+      const result = schema.safeParse('jaja')
+      expect(result.success).toBe(false)
+    })
+
     it('rejects tags with duplicate variant subtags (RFC 5646 §4.1)', () => {
       const result = schema.safeParse('de-DE-1901-1901')
       expect(result.success).toBe(false)
@@ -534,6 +544,11 @@ describe('StringSchema', () => {
       it('accepts tags with duplicate extension singletons', () => {
         const result = schema.safeParse('en-a-foo-a-bar', { strict: false })
         expect(result.success).toBe(true)
+      })
+
+      it('accepts legacy primary subtags', () => {
+        expect(schema.safeParse('JA', { strict: false }).success).toBe(true)
+        expect(schema.safeParse('jaja', { strict: false }).success).toBe(true)
       })
 
       it('still rejects syntactically invalid strings', () => {
